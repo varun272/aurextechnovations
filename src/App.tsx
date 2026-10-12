@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Menu, Pause, Play, X } from 'lucide-react'
 import { site } from './data/site'
+import IndustryShowcase from './components/IndustryShowcase'
 
 const whatsappUrl = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent('Hi Aurex Technovation, I would like to discuss a project.')}`
 
@@ -40,19 +41,6 @@ const services = [
     details: 'CUSTOMER SUPPORT · LEAD FLOWS · AUTOMATION',
     image: '/services/chatbots.jpg',
   },
-]
-
-const projects = [
-  { name: 'EduBridge', type: 'Education platform', image: '/projects/edubridge.png', alt: 'EduBridge education workspace sign-in and dashboard', description: 'An institution-first workspace bringing attendance, academics, campus updates, and family communication together.', services: 'EDTECH · DASHBOARDS · COMMUNICATION' },
-  { name: 'Ahirat Perfumery', type: 'Fragrance brand', image: '/projects/ahirat-perfumery.png', alt: 'Ahirat Perfumery product website hero', description: 'An expressive digital storefront presenting a handcrafted fragrance collection through a distinct luxury identity.', services: 'BRAND EXPERIENCE · PRODUCT STORYTELLING' },
-  { name: 'Manas Wellness', type: 'Ayurveda & wellness', image: '/projects/manas-wellness.png', alt: 'Manas Wellness Ayurveda website hero', description: 'A calm wellness experience showcasing Ayurvedic blends with clear product discovery and a nature-led visual system.', services: 'WELLNESS · E-COMMERCE · RESPONSIVE DESIGN' },
-  { name: 'Shubh Sanket', type: 'Real estate & civil contractors', image: '/projects/shubh-sanket.png', alt: 'Shubh Sanket real estate and civil contractors website hero', description: 'A confident online presence for property and construction services, with a direct path to request a consultation.', services: 'REAL ESTATE · CONSTRUCTION · LEAD GENERATION' },
-]
-
-const trustPoints = [
-  { title: 'Responsive by design', detail: 'A considered experience on every screen.' },
-  { title: 'Clear delivery', detail: 'Defined scope, milestones, and communication.' },
-  { title: 'Built to grow', detail: 'Thoughtful foundations for what comes next.' },
 ]
 
 const metrics = [
@@ -116,58 +104,15 @@ function Brand() {
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeService, setActiveService] = useState(0)
-  const [activeMobileProject, setActiveMobileProject] = useState(0)
   const [isServiceSlideshowPlaying, setIsServiceSlideshowPlaying] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-  const workTrackRef = useRef<HTMLDivElement>(null)
   const closeMenu = () => setMenuOpen(false)
   const service = services[activeService]
-
-  useEffect(() => {
-    const track = workTrackRef.current
-    const firstSet = track?.querySelector<HTMLElement>('.work-group')
-    if (!track || !firstSet) return
-
-    const measureTrack = () => {
-      const distance = firstSet.getBoundingClientRect().width
-      if (distance <= 0) return
-      track.style.setProperty('--work-loop-offset', `-${distance}px`)
-      track.style.setProperty('--work-loop-duration', `${Math.max(18, distance / 46)}s`)
-    }
-
-    const observer = new ResizeObserver(measureTrack)
-    observer.observe(firstSet)
-    measureTrack()
-    return () => observer.disconnect()
-  }, [])
 
   useEffect(() => {
     if (!isServiceSlideshowPlaying) return
     const timer = window.setInterval(() => setActiveService(current => (current + 1) % services.length), 3000)
     return () => window.clearInterval(timer)
   }, [isServiceSlideshowPlaying])
-
-  useEffect(() => {
-    const mobileQuery = window.matchMedia('(max-width: 680px)')
-    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    let timer = 0
-
-    const syncMobileSlideshow = () => {
-      window.clearInterval(timer)
-      if (!mobileQuery.matches || reducedMotionQuery.matches) return
-      timer = window.setInterval(() => {
-        setActiveMobileProject(current => (current + 1) % projects.length)
-      }, 4000)
-    }
-
-    syncMobileSlideshow()
-    mobileQuery.addEventListener('change', syncMobileSlideshow)
-    reducedMotionQuery.addEventListener('change', syncMobileSlideshow)
-    return () => {
-      window.clearInterval(timer)
-      mobileQuery.removeEventListener('change', syncMobileSlideshow)
-      reducedMotionQuery.removeEventListener('change', syncMobileSlideshow)
-    }
-  }, [])
 
   const showService = (offset: number) => setActiveService(current => (current + offset + services.length) % services.length)
 
@@ -177,7 +122,7 @@ export default function App() {
         <div className="header-inner">
           <Brand />
           <nav className={`main-nav${menuOpen ? ' nav-open' : ''}`} aria-label="Main navigation">
-            <a href="#work" onClick={closeMenu}>Our work</a>
+            <a href="#industries" onClick={closeMenu}>Industries</a>
             <a href="#services" onClick={closeMenu}>Services</a>
             <a href="#approach" onClick={closeMenu}>Our approach</a>
             <a href="#contact" onClick={closeMenu}>Contact</a>
@@ -225,56 +170,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="work-section section-space" id="work" aria-labelledby="work-title">
-          <div className="page-width work-heading">
-            <div><p className="section-label">SELECTED WORK</p><h2 id="work-title">A few things<br /><span>we’ve built.</span></h2></div>
-            <p>Digital experiences shaped around the people and businesses they serve.</p>
-          </div>
-          <div className="work-track" role="region" aria-roledescription="carousel" aria-label="Selected project work">
-            <div className="work-track-inner" ref={workTrackRef}>
-              {[0, 1].map(group => (
-                <div className="work-group" key={group} aria-hidden={group === 1}>
-                  {projects.map((project, index) => (
-                    <article className="work-card" key={project.name} tabIndex={group === 0 ? 0 : -1}>
-                      <div className="work-image">
-                        <img src={project.image} alt={group === 0 ? project.alt : ''} loading={group === 0 ? 'lazy' : 'eager'} />
-                        <div className="work-card-detail"><span className="work-card-index">PROJECT / 0{index + 1}</span><h3>{project.name}</h3><p>{project.description}</p><small>{project.services}</small></div>
-                      </div>
-                      <div className="work-card-meta"><div><h3>{project.name}</h3><p>{project.type}</p></div><span>0{index + 1}</span></div>
-                    </article>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="work-mobile-showcase" role="region" aria-roledescription="carousel" aria-label="Selected project work">
-            {projects.map((project, index) => (
-              <article className={`work-mobile-slide${index === activeMobileProject ? ' is-active' : ''}`} key={project.name} aria-hidden={index !== activeMobileProject}>
-                <div className="work-mobile-image"><img src={project.image} alt={project.alt} /></div>
-                <div className="work-mobile-meta">
-                  <span className="work-card-index">PROJECT / 0{index + 1}</span>
-                  <h3>{project.name}</h3>
-                  <p className="work-mobile-type">{project.type}</p>
-                  <p className="work-mobile-description">{project.description}</p>
-                  <small>{project.services}</small>
-                </div>
-              </article>
-            ))}
-            <div className="work-mobile-controls" aria-label="Choose a project">
-              {projects.map((project, index) => (
-                <button key={project.name} type="button" aria-label={`Show project ${index + 1}: ${project.name}`} aria-pressed={index === activeMobileProject} onClick={() => setActiveMobileProject(index)}>
-                  <span>{index + 1}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="page-width work-footer">
-            <span>PROJECT SPOTLIGHTS <span aria-hidden="true">✳</span></span>
-            <div className="work-trust" aria-label="How we work">
-              {trustPoints.map(point => <div key={point.title}><b>{point.title}</b><span>{point.detail}</span></div>)}
-            </div>
-          </div>
-        </section>
+        <IndustryShowcase />
 
         <section className="services-section section-space page-width" id="services">
           <div className="section-heading services-heading">
