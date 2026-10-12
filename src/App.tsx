@@ -116,6 +116,7 @@ function Brand() {
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeService, setActiveService] = useState(0)
+  const [activeMobileProject, setActiveMobileProject] = useState(0)
   const [isServiceSlideshowPlaying, setIsServiceSlideshowPlaying] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const workTrackRef = useRef<HTMLDivElement>(null)
   const closeMenu = () => setMenuOpen(false)
@@ -144,6 +145,29 @@ export default function App() {
     const timer = window.setInterval(() => setActiveService(current => (current + 1) % services.length), 3000)
     return () => window.clearInterval(timer)
   }, [isServiceSlideshowPlaying])
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia('(max-width: 680px)')
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let timer = 0
+
+    const syncMobileSlideshow = () => {
+      window.clearInterval(timer)
+      if (!mobileQuery.matches || reducedMotionQuery.matches) return
+      timer = window.setInterval(() => {
+        setActiveMobileProject(current => (current + 1) % projects.length)
+      }, 4000)
+    }
+
+    syncMobileSlideshow()
+    mobileQuery.addEventListener('change', syncMobileSlideshow)
+    reducedMotionQuery.addEventListener('change', syncMobileSlideshow)
+    return () => {
+      window.clearInterval(timer)
+      mobileQuery.removeEventListener('change', syncMobileSlideshow)
+      reducedMotionQuery.removeEventListener('change', syncMobileSlideshow)
+    }
+  }, [])
 
   const showService = (offset: number) => setActiveService(current => (current + offset + services.length) % services.length)
 
@@ -220,6 +244,27 @@ export default function App() {
                     </article>
                   ))}
                 </div>
+              ))}
+            </div>
+          </div>
+          <div className="work-mobile-showcase" role="region" aria-roledescription="carousel" aria-label="Selected project work">
+            {projects.map((project, index) => (
+              <article className={`work-mobile-slide${index === activeMobileProject ? ' is-active' : ''}`} key={project.name} aria-hidden={index !== activeMobileProject}>
+                <div className="work-mobile-image"><img src={project.image} alt={project.alt} /></div>
+                <div className="work-mobile-meta">
+                  <span className="work-card-index">PROJECT / 0{index + 1}</span>
+                  <h3>{project.name}</h3>
+                  <p className="work-mobile-type">{project.type}</p>
+                  <p className="work-mobile-description">{project.description}</p>
+                  <small>{project.services}</small>
+                </div>
+              </article>
+            ))}
+            <div className="work-mobile-controls" aria-label="Choose a project">
+              {projects.map((project, index) => (
+                <button key={project.name} type="button" aria-label={`Show project ${index + 1}: ${project.name}`} aria-pressed={index === activeMobileProject} onClick={() => setActiveMobileProject(index)}>
+                  <span>{index + 1}</span>
+                </button>
               ))}
             </div>
           </div>

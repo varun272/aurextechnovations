@@ -95,6 +95,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .work-heading h2 span { color: var(--gold); }
 .work-heading > p { max-width: 350px; margin: 0 0 6px; color: var(--muted); font-size: 14px; line-height: 1.7; }
 .work-track { width: 100vw; margin: 42px 0 0 calc(50% - 50vw); overflow: hidden; }
+.work-mobile-showcase { display: none; }
 .work-track-inner { display: flex; width: max-content; animation: portfolio-slideshow var(--work-loop-duration, 38s) linear infinite; will-change: transform; }
 .work-group { display: flex; flex: 0 0 auto; gap: 20px; padding-right: 20px; }
 .work-card { flex: 0 0 clamp(330px, 36vw, 430px); min-width: 0; }
@@ -254,10 +255,21 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
   .work-heading { align-items: flex-start; flex-direction: column; gap: 16px; }
   .work-heading h2 { margin-top: 15px; font-size: clamp(43px, 11.5vw, 61px); }
   .work-heading > p { max-width: 410px; font-size: 13px; }
-  .work-track { margin-top: 26px; }
-  .work-group { gap: 14px; padding-right: 14px; }
-  .work-card { flex-basis: min(82vw, 360px); }
-  .work-image { height: 220px; }
+  .work-track { display: none; }
+  .work-mobile-showcase { display: block; margin-top: 26px; }
+  .work-mobile-slide { display: none; }
+  .work-mobile-slide.is-active { display: block; animation: work-mobile-enter .28s ease both; }
+  .work-mobile-image { height: clamp(205px, 62vw, 320px); overflow: hidden; border: 1px solid var(--line-strong); background: #0b1727; }
+  .work-mobile-image img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+  .work-mobile-meta { padding-top: 16px; }
+  .work-mobile-meta h3 { margin: 9px 0 0; color: var(--text); font-size: 21px; font-weight: 500; letter-spacing: -.035em; }
+  .work-mobile-type { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+  .work-mobile-description { max-width: 520px; margin: 12px 0 0; color: #c0cbd7; font-size: 12px; line-height: 1.65; }
+  .work-mobile-meta > small { display: block; margin-top: 12px; color: #91a1b3; font: 8px var(--mono); letter-spacing: .09em; line-height: 1.6; }
+  .work-mobile-controls { display: flex; gap: 8px; margin-top: 18px; }
+  .work-mobile-controls button { display: grid; width: 38px; height: 34px; place-items: center; border: 1px solid var(--line-strong); background: transparent; color: var(--muted); font: 10px var(--mono); cursor: pointer; }
+  .work-mobile-controls button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+  @keyframes work-mobile-enter { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
   .work-card-meta { padding-top: 13px; }
   .work-card-meta h3 { font-size: 16px; }
   .work-footer { gap: 15px; margin-top: 22px; }
@@ -334,6 +346,5 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 680px) {
-  .work-track { width: calc(100% - 40px); }
-  .work-group { grid-template-columns: 1fr; }
+  .work-mobile-slide.is-active { animation: none; }
 }
