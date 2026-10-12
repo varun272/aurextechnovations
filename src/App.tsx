@@ -117,8 +117,27 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeService, setActiveService] = useState(0)
   const [isServiceSlideshowPlaying, setIsServiceSlideshowPlaying] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const workTrackRef = useRef<HTMLDivElement>(null)
   const closeMenu = () => setMenuOpen(false)
   const service = services[activeService]
+
+  useEffect(() => {
+    const track = workTrackRef.current
+    const firstSet = track?.querySelector<HTMLElement>('.work-group')
+    if (!track || !firstSet) return
+
+    const measureTrack = () => {
+      const distance = firstSet.getBoundingClientRect().width
+      if (distance <= 0) return
+      track.style.setProperty('--work-loop-offset', `-${distance}px`)
+      track.style.setProperty('--work-loop-duration', `${Math.max(18, distance / 46)}s`)
+    }
+
+    const observer = new ResizeObserver(measureTrack)
+    observer.observe(firstSet)
+    measureTrack()
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     if (!isServiceSlideshowPlaying) return
@@ -188,7 +207,7 @@ export default function App() {
             <p>Digital experiences shaped around the people and businesses they serve.</p>
           </div>
           <div className="work-track" role="region" aria-roledescription="carousel" aria-label="Selected project work">
-            <div className="work-track-inner">
+            <div className="work-track-inner" ref={workTrackRef}>
               {[0, 1].map(group => (
                 <div className="work-group" key={group} aria-hidden={group === 1}>
                   {projects.map((project, index) => (

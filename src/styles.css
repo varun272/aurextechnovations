@@ -95,7 +95,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .work-heading h2 span { color: var(--gold); }
 .work-heading > p { max-width: 350px; margin: 0 0 6px; color: var(--muted); font-size: 14px; line-height: 1.7; }
 .work-track { width: 100vw; margin: 42px 0 0 calc(50% - 50vw); overflow: hidden; }
-.work-track-inner { display: flex; width: max-content; animation: portfolio-slideshow 38s linear infinite; will-change: transform; }
+.work-track-inner { display: flex; width: max-content; animation: portfolio-slideshow var(--work-loop-duration, 38s) linear infinite; will-change: transform; }
 .work-group { display: flex; flex: 0 0 auto; gap: 20px; padding-right: 20px; }
 .work-card { flex: 0 0 clamp(330px, 36vw, 430px); min-width: 0; }
 .work-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
@@ -108,7 +108,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .work-card-detail h3 { margin: 12px 0 8px; font-size: clamp(19px, 2vw, 25px); font-weight: 500; letter-spacing: -.04em; }
 .work-card-detail p { max-width: 390px; margin: 0; color: #c0cbd7; font-size: 12px; line-height: 1.65; }
 .work-card-detail small { margin-top: 14px; color: #91a1b3; font: 8px var(--mono); letter-spacing: .09em; line-height: 1.6; }
-@keyframes portfolio-slideshow { to { transform: translateX(-50%); } }
+@keyframes portfolio-slideshow { to { transform: translate3d(var(--work-loop-offset, -50%), 0, 0); } }
 @media (hover: hover) and (pointer: fine) {
   .work-track:hover .work-track-inner, .work-track:focus-within .work-track-inner { animation-play-state: paused; }
 }
