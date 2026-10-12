@@ -96,7 +96,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .work-heading > p { max-width: 350px; margin: 0 0 6px; color: var(--muted); font-size: 14px; line-height: 1.7; }
 .work-track { width: 100vw; margin: 42px 0 0 calc(50% - 50vw); overflow: hidden; }
 .work-track-inner { display: flex; width: max-content; animation: portfolio-slideshow 38s linear infinite; will-change: transform; }
-.work-track:hover .work-track-inner, .work-track:focus-within .work-track-inner { animation-play-state: paused; }
 .work-group { display: flex; flex: 0 0 auto; gap: 20px; padding-right: 20px; }
 .work-card { flex: 0 0 clamp(330px, 36vw, 430px); min-width: 0; }
 .work-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
@@ -110,6 +109,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .work-card-detail p { max-width: 390px; margin: 0; color: #c0cbd7; font-size: 12px; line-height: 1.65; }
 .work-card-detail small { margin-top: 14px; color: #91a1b3; font: 8px var(--mono); letter-spacing: .09em; line-height: 1.6; }
 @keyframes portfolio-slideshow { to { transform: translateX(-50%); } }
+@media (hover: hover) and (pointer: fine) {
+  .work-track:hover .work-track-inner, .work-track:focus-within .work-track-inner { animation-play-state: paused; }
+}
 .work-card-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding-top: 16px; }
 .work-card-meta h3 { margin: 0; color: var(--text); font-size: 17px; font-weight: 500; letter-spacing: -.025em; }
 .work-card-meta p { margin: 6px 0 0; color: var(--muted); font-size: 11px; }
